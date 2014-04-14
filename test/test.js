@@ -5,6 +5,7 @@ var ndselect = require("../select.js")
 var tape = require("tape")
 var pack = require("ndarray-pack")
 var unpack = require("ndarray-unpack")
+var dup = require("dup")
 
 function GetView(data) {
   this._data = data
@@ -28,6 +29,12 @@ tape("ndarray-select", function(t) {
       var view = ndarray(data.slice())
       ndselect(view, i)
       t.equals(view.get(i), copy[i])
+      for(var j=0; j<i; ++j) {
+        t.ok(view.get(j) <= view.get(i), "check partition")
+      }
+      for(var j=i+1; j<data.length; ++j) {
+        t.ok(view.get(j) >= view.get(i), "check partition")
+      }
       view.data.sort()
       t.same(view.data, copy)
       
@@ -43,6 +50,12 @@ tape("ndarray-select", function(t) {
         return a.get()-b.get()
       })
       t.equals(view.get(i), copy[i])
+      for(var j=0; j<i; ++j) {
+        t.ok(view.get(j) <= view.get(i), "check partition")
+      }
+      for(var j=i+1; j<data.length; ++j) {
+        t.ok(view.get(j) >= view.get(i), "check partition")
+      }
       view.data.sort()
       t.same(view.data, copy)
     }
@@ -54,6 +67,10 @@ tape("ndarray-select", function(t) {
   verifyArray1D([5, 4, 3, 2, 1,0])
   verifyArray1D([0,1,2,3,4,5])
   verifyArray1D([1, -1, 0, 1, 1, 2])
+  verifyArray1D(dup([100], 0).map(function() {
+    return Math.random()
+  }))
+
   
   function compareArray(a,b) {
     for(var i=0; i<a.length; ++i) {
@@ -73,6 +90,12 @@ tape("ndarray-select", function(t) {
       var section = ndselect(view, i)
       t.same(unpack(section), sorted[i])
       var vdata = unpack(view)
+      for(var j=0; j<i; ++j) {
+        t.ok(compareArray(vdata[j], vdata[i]) <= 0, "check partition")
+      }
+      for(var j=i+1; j<data.length; ++j) {
+        t.ok(compareArray(vdata[j], vdata[i]) >= 0, "check partition")
+      }
       vdata.sort(compareArray)
       t.same(vdata, sorted)
     }
@@ -100,6 +123,10 @@ tape("ndarray-select", function(t) {
        [0,0]],
       [[1,1],
        [1,1]]]), 1)
+
+  verifyArray2D(dup([100],0).map(function() {
+    return [(Math.random()*10)|0, (Math.random()*10)|0, (Math.random()*10)|0]
+  }))
 
   t.end()
 })
