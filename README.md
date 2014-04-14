@@ -35,7 +35,11 @@ npm install ndarray-select
 
 # API
 
-#### `require("ndarray-select")(array, k[, compare])`
+```javascript
+var ndselect = require("ndarray-select")
+```
+
+#### `ndselect(array, k[, compare])`
 Selects the kth item from the ndarray `array` along the first axis of `array`.
 
 * `array` is an [ndarray](https://github.com/mikolalysenko/ndarray)
@@ -45,6 +49,15 @@ Selects the kth item from the ndarray `array` along the first axis of `array`.
 **Returns** An ndarray view of `array.pick(k)`
 
 **Note** This method modifies `array`.  After completion, the element at position `k` will be in sorted order, with all elements `<array.pick(k)` occuring before `k` and all elements `>array.pick(k)` after `k` in the list.
+
+#### `ndselect.compile(order, useCompare, dtype)`
+Precompiles an optimized selection algorithm for an array with the given index order and datatype
+
+* `order` is the order of the ndarray
+* `useCompare` is a flag which if set uses a comparison function
+* `dtype` is the datatype of the array
+
+**Returns** An optimized `ndselect` function
 
 # Credits
 (c) 2014 Mikola Lysenko. MIT License

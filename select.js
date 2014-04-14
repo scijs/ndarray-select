@@ -1,6 +1,7 @@
 "use strict"
 
 module.exports = ndSelect
+module.exports.compile = lookupCache
 
 //Macros
 var ARRAY = "a"
@@ -207,6 +208,16 @@ function compileQuickSelect(order, useCompare, dtype) {
 }
 
 var CACHE = {}
+
+function lookupCache(order, useCompare, dtype) {
+  var typesig = order.join() + useCompare + dtype
+  var proc = CACHE[typesig]
+  if(proc) {
+    return proc
+  }
+  return CACHE[typesig] = compileQuickSelect(order, useCompare, dtype)
+}
+
 function ndSelect(array, k, compare) {
   k |= 0
   if((array.dimension === 0) || 
@@ -215,11 +226,7 @@ function ndSelect(array, k, compare) {
     return null
   }
   var useCompare = !!compare
-  var typesig = array.order.join() + useCompare + array.dtype
-  var proc = CACHE[typesig]
-  if(!proc) {
-    proc = CACHE[typesig] = compileQuickSelect(array.order, useCompare, array.dtype)
-  }
+  var proc = lookupCache(array.order, useCompare, array.dtype)
   if(useCompare) {
     return proc(array, k, compare)
   } else {
