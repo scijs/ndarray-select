@@ -76,9 +76,9 @@ function compileQuickSelect(order, useCompare, dtype) {
       INDEX(i) + "=0")
   }
   for(var i=1; i<dimension; ++i) {
-    if(i < dimension-1) {
-      vars.push(STEP_CMP(i) + "=(" + STRIDE(i) + "-" + SHAPE(i+1) + "*" + STRIDE(i+1) + ")|0",
-                STEP(order[i]) + "=(" + STRIDE(order[i]) + "-" + SHAPE(order[i+1]) + "*" + STRIDE(order[i+1]) + ")|0")
+    if(i > 1) {
+      vars.push(STEP_CMP(i) + "=(" + STRIDE(i) + "-" + SHAPE(i-1) + "*" + STRIDE(i-1) + ")|0",
+                STEP(order[i]) + "=(" + STRIDE(order[i]) + "-" + SHAPE(order[i-1]) + "*" + STRIDE(order[i-1]) + ")|0")
     } else {
       vars.push(STEP_CMP(i) + "=" + STRIDE(i),
                 STEP(order[i]) + "=" + STRIDE(order[i]))
@@ -162,19 +162,19 @@ function compileQuickSelect(order, useCompare, dtype) {
       PIVOT, "=(", RND, "()*(", HI, "-", LO, "+1)+", LO, ")|0;")
 
   //Partition array by pivot
-  swap(PIVOT, HI)
+  swap(PIVOT, HI) // Store pivot temporarily at the end of the array
 
   code.push(
-    PIVOT, "=", LO, ";",
+    PIVOT, "=", LO, ";", // PIVOT will now be used to keep track of the end of the interval of elements less than the pivot
     "for(", INDEX(0), "=", LO, ";",
       INDEX(0), "<", HI, ";",
-      INDEX(0), "++){")
-  compare(TMP, INDEX(0), HI)
+      INDEX(0), "++){") // Loop over other elements (unequal to the pivot), note that HI now points to the pivot
+  compare(TMP, INDEX(0), HI) // Lexicographical compare of element with pivot
   code.push("if(", TMP, "<0){")
-    swap(PIVOT, INDEX(0))
-    code.push(PIVOT, "++;")
+  swap(PIVOT, INDEX(0)) // Swap current element with element at index PIVOT if it is less than the pivot
+  code.push(PIVOT, "++;")
   code.push("}}")
-  swap(PIVOT, HI)
+  swap(PIVOT, HI) // Store pivot right after all elements that are less than the pivot (implying that all elements >= the pivot are behind the pivot)
 
   //Check pivot bounds
   code.push(

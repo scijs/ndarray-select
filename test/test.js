@@ -117,6 +117,13 @@ tape("ndarray-select", function(t) {
     [0,0,0,0,6],
   ])
 
+  verifyArray2D([
+    [0, 0, 1],
+    [100, 0, 10],
+    [50, 1, 10],
+    [0, 2.5, -1],
+    [-1, -1, -1]
+  ])
 
   ndselect(pack([
       [[0,0],

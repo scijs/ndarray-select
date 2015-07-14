@@ -8,20 +8,21 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "ndarray": "~1.0.11",
-    "ndarray-pack": "~1.0.1",
-    "ndarray-unpack": "~0.0.0",
-    "tape": "~2.12.3",
-    "dup": "0.0.0"
+    "ndarray": "^1.0.18",
+    "ndarray-pack": "^1.1.1",
+    "ndarray-unpack": "^1.0.0",
+    "tape": "^4.0.0",
+    "dup": "^1.0.0"
   },
   "scripts": {
     "test": "tape test/*.js"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/mikolalysenko/ndarray-select.git"
+    "url": "git://github.com/scijs/ndarray-select.git"
   },
   "keywords": [
+    "scijs",
     "quick",
     "select",
     "median",
@@ -30,9 +31,11 @@
     "sort"
   ],
   "author": "Mikola Lysenko",
+  "contributors": [
+    "Jasper van de Gronde <th.v.d.gronde@hccnet.nl>"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mikolalysenko/ndarray-select/issues"
-  },
-  "homepage": "https://github.com/mikolalysenko/ndarray-select"
+    "url": "https://github.com/scijs/ndarray-select/issues"
+  }
 }
